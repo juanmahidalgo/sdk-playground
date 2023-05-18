@@ -11,24 +11,26 @@ import {
 } from '@dcl/sdk/ecs'
 import { Cube } from './components'
 import { Color4 } from '@dcl/ecs-math'
+import { GeneratedShape } from './openAI'
 
 export enum Shape {
   CUBE = 'cube',
   SPHERE = 'sphere',
-  CYLINDER = 'cylinder'
+  CYLINDER = 'cylinder',
+  PLANE = 'PLANE'
 }
 
 // Shape factory
-export function createShape(shape: Shape, position: { x: number; y: number; z: number }, spawner = true): Entity {
+export function createShape(shape: GeneratedShape, spawner = true): Entity {
+  // export function createShape(shape: Shape, position: { x: number; y: number; z: number }, spawner = true): Entity {
   const meshEntity = engine.addEntity()
 
   // Used to track the cubes
   Cube.create(meshEntity)
 
-  const { x, y, z } = position
-  Transform.create(meshEntity, { position: { x, y, z } })
+  Transform.create(meshEntity, { position: shape.position })
   // set how the cube looks and collides
-  switch (shape) {
+  switch (shape.shape) {
     case Shape.CUBE:
       MeshRenderer.setBox(meshEntity)
       MeshCollider.setBox(meshEntity)
@@ -40,6 +42,23 @@ export function createShape(shape: Shape, position: { x: number; y: number; z: n
     case Shape.CYLINDER:
       MeshRenderer.setCylinder(meshEntity)
       MeshCollider.setCylinder(meshEntity)
+
+      if (shape.scale) {
+        Transform.createOrReplace(meshEntity, { scale: { x: 0, y: 10, z: 0 } })
+      }
+      if (shape.rotation) {
+        Transform.createOrReplace(meshEntity, { rotation: { ...shape.rotation, w: 0 } })
+      }
+
+      // apply rotation
+      // apply color
+      // apply
+
+      break
+    case Shape.PLANE:
+      MeshRenderer.setPlane(meshEntity)
+      MeshCollider.setPlane(meshEntity)
+
       break
   }
 

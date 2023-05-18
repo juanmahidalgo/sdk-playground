@@ -1,38 +1,28 @@
 import { Shape } from './factory'
 
-const OPEN_API_SERVER = 'http://localhost:3000/prompt'
+const OPEN_API_SERVER = 'http://localhost:3000'
 
-interface GeneratedShape {
+type Coords = {
+  x: number
+  y: number
+  z: number
+}
+
+export interface GeneratedShape {
   shape: Shape
-  position: {
-    x: number
-    y: number
-    z: number
-  }
-  // Additional properties for Decentraland SDK usage
-  size?: {
-    width: number
-    height: number
-    depth: number
-  }
-  rotation?: {
-    x: number
-    y: number
-    z: number
-    order?: string
-  }
-  color?: string
-  // ... add more properties as needed
+  position: Coords
+  rotation?: Coords
+  scale?: Coords
 }
 
 interface PromptResponse {
   shapes: [GeneratedShape]
 }
 
-export const promptOpenAI = async (prompt: string): Promise<PromptResponse> => {
+export const promptOpenAI = async (prompt: string, endpoint = 'prompt'): Promise<PromptResponse> => {
   try {
     // const controller = new AbortController()
-    const response = await fetch(OPEN_API_SERVER, {
+    const response = await fetch(`${OPEN_API_SERVER}/${endpoint}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

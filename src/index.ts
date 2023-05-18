@@ -1,9 +1,7 @@
 import { engine, executeTask, Material } from '@dcl/sdk/ecs'
 import { Color4 } from '@dcl/sdk/math'
-
 import { createCube } from './factory'
 import { bounceScalingSystem, circularSystem, spawnerSystem } from './systems'
-
 import { setupUi } from './ui'
 
 // Defining behavior. See `src/systems.ts` file.

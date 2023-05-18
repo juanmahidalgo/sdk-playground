@@ -12,9 +12,21 @@ const handleInputChange = (prompt: string) => {
 
 const handleSubmitPrompt = async () => {
   const response = await promptOpenAI(userInput)
-  response.shapes.forEach((shape) => {
+  response.shapes.forEach((generatedShape) => {
     try {
-      const createdShape = createShape(shape.shape, shape.position)
+      const createdShape = createShape(generatedShape)
+      Material.setPbrMaterial(createdShape, { albedoColor: Color4.create(1.0, 0.85, 0.42) })
+    } catch (error) {
+      console.log('error: ', error)
+    }
+  })
+}
+
+const handleStaticSubmitPrompt = async () => {
+  const response = await promptOpenAI(userInput, 'static-prompt')
+  response.shapes.forEach((generatedShape) => {
+    try {
+      const createdShape = createShape(generatedShape)
       Material.setPbrMaterial(createdShape, { albedoColor: Color4.create(1.0, 0.85, 0.42) })
     } catch (error) {
       console.log('error: ', error)
@@ -25,9 +37,9 @@ const handleSubmitPrompt = async () => {
 const uiComponent = () => (
   <UiEntity
     uiTransform={{
-      width: 600,
+      width: 400,
       height: 300,
-      margin: '16px 0 8px 300px',
+      margin: '300px 0 8px 8px',
       padding: 4
     }}
     uiBackground={{ color: Color4.create(0.5, 0.8, 0.1, 0.6) }}
@@ -64,13 +76,17 @@ const uiComponent = () => (
       />
       <Button
         uiTransform={{ width: 150, height: 40, margin: 8 }}
-        value="Generate Scene"
+        value="ChatGPT"
         variant="primary"
         fontSize={14}
         onMouseDown={handleSubmitPrompt}
-        // onMouseDown={() => {
-        //   createCube(1 + Math.random() * 8, Math.random() * 8, 1 + Math.random() * 8, false)
-        // }}
+      />
+      <Button
+        uiTransform={{ width: 150, height: 40, margin: 8 }}
+        value="Static"
+        variant="primary"
+        fontSize={14}
+        onMouseDown={handleStaticSubmitPrompt}
       />
       {/* <Label
         onMouseDown={() => {
