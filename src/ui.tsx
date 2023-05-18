@@ -3,6 +3,8 @@ import { Color4 } from '@dcl/sdk/math'
 import ReactEcs, { Button, ReactEcsRenderer, UiEntity, Input } from '@dcl/sdk/react-ecs'
 import { createShape } from './factory'
 import { promptOpenAI } from './openAI'
+import { Generated, JustGenerated } from './components'
+import { parent } from '.'
 
 let userInput = ''
 
@@ -11,11 +13,17 @@ const handleInputChange = (prompt: string) => {
 }
 
 const handleSubmitPrompt = async () => {
+  // clean generated entities
+  const generatedEntities = engine.getEntitiesWith(Generated)
+  for (const [entity] of generatedEntities) {
+    engine.removeEntity(entity)
+  }
   const response = await promptOpenAI(userInput)
   response.shapes.forEach((generatedShape) => {
     try {
       const createdShape = createShape(generatedShape)
       Material.setPbrMaterial(createdShape, { albedoColor: Color4.create(1.0, 0.85, 0.42) })
+      Generated.create(createdShape)
     } catch (error) {
       console.log('error: ', error)
     }
@@ -23,15 +31,23 @@ const handleSubmitPrompt = async () => {
 }
 
 const handleStaticSubmitPrompt = async () => {
+  // clean generated entities
+  const generatedEntities = engine.getEntitiesWith(Generated)
+  for (const [entity] of generatedEntities) {
+    engine.removeEntity(entity)
+  }
   const response = await promptOpenAI(userInput, 'static-prompt')
   response.shapes.forEach((generatedShape) => {
     try {
       const createdShape = createShape(generatedShape)
       Material.setPbrMaterial(createdShape, { albedoColor: Color4.create(1.0, 0.85, 0.42) })
+      Generated.create(createdShape)
     } catch (error) {
       console.log('error: ', error)
     }
   })
+
+  JustGenerated.create(parent)
 }
 
 const uiComponent = () => (

@@ -12,6 +12,8 @@ import {
 import { Cube } from './components'
 import { Color4 } from '@dcl/ecs-math'
 import { GeneratedShape } from './openAI'
+import { Quaternion } from '@dcl/sdk/math'
+import { parent } from '.'
 
 export enum Shape {
   CUBE = 'cube',
@@ -42,18 +44,6 @@ export function createShape(shape: GeneratedShape, spawner = true): Entity {
     case Shape.CYLINDER:
       MeshRenderer.setCylinder(meshEntity)
       MeshCollider.setCylinder(meshEntity)
-
-      if (shape.scale) {
-        Transform.createOrReplace(meshEntity, { scale: { x: 0, y: 10, z: 0 } })
-      }
-      if (shape.rotation) {
-        Transform.createOrReplace(meshEntity, { rotation: { ...shape.rotation, w: 0 } })
-      }
-
-      // apply rotation
-      // apply color
-      // apply
-
       break
     case Shape.PLANE:
       MeshRenderer.setPlane(meshEntity)
@@ -61,6 +51,19 @@ export function createShape(shape: GeneratedShape, spawner = true): Entity {
 
       break
   }
+
+  let transform = Transform.getMutable(meshEntity)
+  if (shape.rotation) {
+    let newRotation = Quaternion.fromEulerDegrees(shape.rotation.x, shape.rotation.y, shape.rotation.z)
+    transform.rotation = newRotation
+  }
+
+  if (shape.scale) {
+    transform.scale = { ...transform.scale, ...shape.scale }
+  }
+
+  transform.parent = parent
+  // apply color
 
   // set the color
   Material.setPbrMaterial(meshEntity, { albedoColor: Color4.create(1.0, 0.85, 0.42) })
