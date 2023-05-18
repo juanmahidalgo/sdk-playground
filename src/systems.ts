@@ -10,6 +10,8 @@ import {
 } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { createCube } from './factory'
+import { Generated, JustGenerated } from './components'
+import { parent } from '.'
 
 /**
  * BounceScaling is the flag-component with the time elapsed since creation.
@@ -41,6 +43,7 @@ export function spawnerSystem() {
     if (inputSystem.isTriggered(InputAction.IA_PRIMARY, PointerEventType.PET_DOWN, entity)) {
       createCube(1 + Math.random() * 8, Math.random() * 8, 1 + Math.random() * 8, false)
       BounceScaling.createOrReplace(entity)
+
     }
   }
 }
@@ -63,4 +66,14 @@ export function bounceScalingSystem(dt: number) {
       Transform.getMutable(entity).scale = Vector3.scale(Vector3.One(), factor)
     }
   }
+}
+
+export function myLogic(dt: number) {
+  const parentTransform = Transform.getMutable(parent)
+  const speed = 10
+  parentTransform.rotation = Quaternion.multiply(
+    parentTransform.rotation,
+    Quaternion.fromAngleAxis(dt * 10 * speed, Vector3.Up())
+  )
+
 }
