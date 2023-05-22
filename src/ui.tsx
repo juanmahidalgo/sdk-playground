@@ -53,9 +53,9 @@ const handleStaticSubmitPrompt = async () => {
 const uiComponent = () => (
   <UiEntity
     uiTransform={{
-      width: 400,
+      width: 550,
       height: 300,
-      margin: '300px 0 8px 8px',
+      margin: '0px 0px 0px 300px',
       padding: 4
     }}
     uiBackground={{ color: Color4.create(0.5, 0.8, 0.1, 0.6) }}
@@ -74,7 +74,7 @@ const uiComponent = () => (
         uiTransform={{
           width: '100%',
           height: 50,
-          margin: '8px 0'
+          margin: '7px 0'
         }}
         uiBackground={{
           textureMode: 'center',
@@ -87,8 +87,8 @@ const uiComponent = () => (
       <Input
         fontSize={20}
         onChange={handleInputChange}
-        uiTransform={{ width: '100%', margin: 30, padding: 20 }}
-        placeholder="Ask here what you want..."
+        uiTransform={{ width: '100%', margin: 0, padding: 20 }}
+        placeholder="Prompt here something you want to autogenerate with shapes"
       />
       <Button
         uiTransform={{ width: 150, height: 40, margin: 8 }}

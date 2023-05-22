@@ -62,7 +62,7 @@ export function createShape(shape: GeneratedShape, spawner = true): Entity {
     transform.scale = { ...transform.scale, ...shape.scale }
   }
 
-  transform.parent = parent
+  // transform.parent = parent
   // apply color
 
   // set the color
